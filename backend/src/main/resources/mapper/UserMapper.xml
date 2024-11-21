@@ -1,0 +1,40 @@
+<!-- UserMapper.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.dao.userDao">
+
+    <select id="findAll" parameterType="user" resultType="user">
+        select userid,username,email from user
+        <trim suffixOverrides="AND | OR">
+            <if test="userid != null">
+                userid = #{userid}
+                and
+            </if>
+            <if test="username != null">
+                username = #{username}
+                and
+            </if>
+            <if test="email != null">
+                email = #{email}
+                and
+            </if>
+        </trim>
+        <!-- <where>
+            <if test="userid != null">
+                userid = #{userid}
+                and
+            </if>
+            <if test="username != null">
+                username = #{username}
+                and
+            </if>
+            <if test="email != null">
+                email = #{email}
+                and
+            </if>
+            1=1
+        </where> -->
+    </select>
+    <insert id="insert"></insert>
+    <update id="update"></update>
+    <delete id="delete"></delete>
+</mapper>

@@ -1,0 +1,19 @@
+<!-- UserMapper.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.dao.userDao">
+
+    <select id="findByUsername" resultType="user" parameterType="user">
+        select * from user
+        <trim prefix="where" prefixOverrides="AND">
+            <if test="username">
+                AND
+                 username = #{username}
+            </if>
+            <if test="password != null">
+                AND
+                password = #{password}
+            </if>
+        </trim>
+    </select>
+
+</mapper>
