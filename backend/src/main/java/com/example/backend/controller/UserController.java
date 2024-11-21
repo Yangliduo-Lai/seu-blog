@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.entity.user;
-import com.example.backend.service.userService;
+import com.example.backend.entity.User;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -11,9 +10,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Scope("prototype")
 @RequestMapping("/user")
-public class userController {
+public class UserController {
     @Resource
-    private userService UserService;
+    private com.example.backend.service.UserService UserService;
 
     @ResponseBody
     @RequestMapping("/list")
@@ -21,7 +20,7 @@ public class userController {
         return this.UserService.findAll(null);
     }
 
-    public Object queryList2(user User) {
+    public Object queryList2(User User) {
         return this.UserService.findAll(User);
     }
 }

@@ -2,7 +2,7 @@ package com.example.backend.entity;
 
 import java.time.LocalDateTime;
 
-public class user {
+public class User {
     private Integer userid;
     private String username;
     private String password;
@@ -18,15 +18,15 @@ public class user {
         this.userid = userid;
     }
 
-    public static String getUsername() {
+    public String getUsername() {
         return username;
     }
-    public user setUsername(String username) {
+    public User setUsername(String username) {
         this.username = username;
         return null;
     }
 
-    public static String getPassword() {
+    public String getPassword() {
         return password;
     }
     public void setPassword(String password) {
