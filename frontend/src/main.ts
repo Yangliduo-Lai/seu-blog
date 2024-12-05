@@ -19,13 +19,17 @@ import "uno.css";
 // If you want to use ElMessage, import it.
 import "element-plus/theme-chalk/src/message.scss";
 
+import router from './router'
+
 library.add(faUserSecret, faCoffee);
 
 const app = createApp(App);
-// app.use(ElementPlus);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 app.use(ElementPlus);
+app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon);
+
+// 挂载整个应用到app容器中
 app.mount("#app");

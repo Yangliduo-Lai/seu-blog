@@ -18,7 +18,10 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "element-plus": "^2.6.2",
     "fast-glob": "^3.3.2",
-    "vue": "^3.4.21"
+    "vite-plugin-vue-setup-extend": "^0.4.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.5.0",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@iconify-json/ep": "^1.1.15",

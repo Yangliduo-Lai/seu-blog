@@ -7,8 +7,13 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    404: typeof import('./components/404.vue')['default']
+    About: typeof import('./components/About.vue')['default']
+    Archives: typeof import('./components/Archives.vue')['default']
     BaseHeader: typeof import('./components/layouts/BaseHeader.vue')['default']
     BaseSide: typeof import('./components/layouts/BaseSide.vue')['default']
+    Blog: typeof import('./components/Blog.vue')['default']
+    Categories: typeof import('./components/Categories.vue')['default']
     ElAnchor: typeof import('element-plus/es')['ElAnchor']
     ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']
     ElAside: typeof import('element-plus/es')['ElAside']
@@ -31,9 +36,17 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
+    ElTimeline: typeof import('element-plus/es')['ElTimeline']
+    ElTimelineItem: typeof import('element-plus/es')['ElTimelineItem']
     ElType: typeof import('element-plus/es')['ElType']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    Login: typeof import('./components/Login.vue')['default']
     Logos: typeof import('./components/Logos.vue')['default']
+    Main: typeof import('./components/Main.vue')['default']
     RightSide: typeof import('./components/layouts/RightSide.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
+    SubTags: typeof import('./components/subpages/SubTags.vue')['default']
+    Tags: typeof import('./components/Tags.vue')['default']
   }
 }

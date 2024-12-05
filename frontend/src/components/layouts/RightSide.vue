@@ -33,24 +33,45 @@
   width: 20%;
   padding: 20px;
   box-sizing: border-box;
-  background: #f9f9f9; /* 轻微灰色背景提升对比 */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* 轻微阴影增加立体感 */
+  background: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 轻微阴影增加立体感 */
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 1000;
 }
 
 .right-side .search-bar {
-  padding: 29px 0;
-  margin-bottom: 20px; /* 增加与下方内容的间距 */
+  padding: 10px 0;
 }
 
 .right-side h3 {
-  margin-bottom: 10px; /* 标题下方留出更多空间 */
-  color: #333; /* 标题颜色深化 */
-  font-size: 16px; /* 增大标题字体大小 */
-  text-align: left;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: bold;
 }
 
-.right-side .recent-updates {
-  color: gray;
+.right-side .recent-updates li a {
+  color: #333;
+  text-decoration: none;
+  display: block;
+}
+
+.right-side .recent-updates li a:hover {
+  text-decoration: underline;
+  color: #555;
+}
+
+.right-side .trending-tags .flex {
+  justify-content: start;
+  gap: 10px;
+}
+
+.el-tag {
+  margin: 0 5px 5px 0; /* 标签间距调整 */
+  cursor: pointer; /* 鼠标悬停手型光标 */
 }
 
 .right-side ul {

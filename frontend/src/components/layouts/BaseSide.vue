@@ -17,48 +17,34 @@
     </div>
 
     <div class="menu">
-    <!-- Menu图标 -->
-      <el-sub-menu index="1">
-        <template #title>
-          <el-icon><house /></el-icon>
-          <h4>HOME</h4>
-        </template>
-        <el-menu-item-group>
-          <template #title><span>Test</span></template>
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
-        </el-sub-menu>
-      </el-sub-menu>
+      <!-- Menu图标 -->
+      <el-menu-item index="1">
+       <el-icon><house /></el-icon>
+       <RouterLink to="/home">HOME</RouterLink>
+      </el-menu-item>
 
       <!--分类-->
       <el-menu-item index="2">
         <el-icon><MessageBox /></el-icon>
-        <h4>CATEGORIES</h4>
+        <RouterLink to="/categories">CATEGORIES</RouterLink>
       </el-menu-item>
 
       <!-- tags -->
       <el-menu-item index="3">
         <el-icon><PriceTag /></el-icon>
-        <h4>TAGS</h4>
+        <RouterLink to="/tags">TAGS</RouterLink>
       </el-menu-item>
 
       <!-- archives -->
       <el-menu-item index="4">
         <el-icon><TakeawayBox /></el-icon>
-        <h4>ARCHIVES</h4>
+        <RouterLink to="/archives">ARCHIVES</RouterLink>
       </el-menu-item>
 
       <!-- about -->
       <el-menu-item index="5">
         <el-icon><More /></el-icon>
-        <h4>ABOUT</h4>
+        <RouterLink to="/about">ABOUT</RouterLink>
       </el-menu-item>
 
       <!-- 最下面的三个图标 -->
@@ -73,12 +59,14 @@
           <el-icon :size="25"><Eleme /></el-icon>
         </div>
       </div>
+
     </div>
   </el-menu>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { RouterLink } from 'vue-router'
 import {
   Location,
   Document,
@@ -98,28 +86,11 @@ const handleClose = (key: string, keyPath: string[]) => {
 <style>
 .el-sidebar {
   width: 20%;
-}
-
-/* 菜单 */
-.el-sidebar .menu {
-}
-.el-sidebar .menu-icons{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  bottom: 0;
-  position: absolute;
+  height: 100vh;
+  overflow: auto;
+  position: fixed;
   left: 0;
-  padding: 10px 0px;
-  background-color: white;
-}
-.el-sidebar .menu-icons .github {
-  margin-right: 20px;
-}
-.el-sidebar .menu-icons .email {
-  margin-right: 20px;
+  top: 0;
 }
 
 /* 个人资料 */
@@ -129,20 +100,56 @@ const handleClose = (key: string, keyPath: string[]) => {
   align-items: center;
   justify-content: center;
   padding: 20px;
-}
-.menu-profile .user-name {
-  padding: 10px;
+  border-bottom: 1px solid #efefef;
 }
 
-/* 图标和文本的一般样式调整 */
-.icon-home span {
-  vertical-align: middle; /* 对齐文本 */
+.menu-profile .user-name,
+.menu-profile .tagline {
+  padding: 10px 0;
 }
 
-/* 用户名样式，确认已经足够突出 */
 .menu-profile .user-name {
   font-weight: bold;
-  font-size: larger; /* 根据需要调整字体大小 */
+  font-size: 20px;
+  color: #333;
 }
 
+.menu-profile .tagline {
+  font-size: 14px;
+  color: #666
+}
+
+/* 菜单 */
+.el-sidebar .menu {
+  padding: 20px 0;
+}
+
+.el-sidebar .menu-icons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+  position: fixed;
+  bottom: 0;
+  padding: 10px 0px;
+  background-color: #f9f9f9;
+}
+
+.el-sidebar .menu-icons div {
+  cursor: pointer;
+}
+
+.el-sidebar a {
+  text-decoration: none;
+  color: #333;
+}
+
+/* 修正图标大小和边距 */
+.el-sidebar .menu-icons .github,
+.el-sidebar .menu-icons .email,
+.el-sidebar .menu-icons .wifi {
+  flex: 1;
+  text-align: center; /* 图标居中显示 */
+}
 </style>
