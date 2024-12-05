@@ -6,6 +6,8 @@ import Categories from '../components/Categories.vue'
 import Tags from '../components/Tags.vue'
 import Archives from '../components/Archives.vue'
 import About from '../components/About.vue'
+import Blog from '../components/Blog.vue'
+
 
 // 创建路由器
 const router = createRouter({
@@ -34,6 +36,10 @@ const router = createRouter({
     {
       path:'/about',
       component:About
+    },
+    {
+      path:'/blog',
+      component:Blog
     }
   ]
 })

@@ -8,14 +8,22 @@
     >
       <h2>{{ post.title }}</h2>
       <p>{{ post.excerpt }}</p>
-      <el-button type="text" :to="post.link">Read More</el-button>
+      <!-- <el-button type="text" :to="post.link">Read More</el-button> -->
+      <el-button type="text" @click="goToBlog()">Read More</el-button>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, SCOPE } from "element-plus";
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToBlog = () => {
+  router.push('/blog');
+};
 
 defineProps<{ msg: string }>();
 
