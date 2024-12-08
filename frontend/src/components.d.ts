@@ -29,6 +29,7 @@ declare module 'vue' {
     ElText: typeof import('element-plus/es')['ElText']
     Login: typeof import('./components/Login.vue')['default']
     Main: typeof import('./components/Main.vue')['default']
+    ManagementDashboard: typeof import('./components/ManagementDashboard.vue')['default']
     RightSide: typeof import('./components/layouts/RightSide.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -7,6 +7,7 @@ import Tags from '../components/Tags.vue'
 import Archives from '../components/Archives.vue'
 import About from '../components/About.vue'
 import Blog from '../components/Blog.vue'
+import ManagementDashboard from '~/components/ManagementDashboard.vue'
 
 
 // 创建路由器
@@ -40,6 +41,10 @@ const router = createRouter({
     {
       path:'/blog',
       component:Blog
+    },
+    {
+      path:'/management',
+      component:ManagementDashboard
     }
   ]
 })
