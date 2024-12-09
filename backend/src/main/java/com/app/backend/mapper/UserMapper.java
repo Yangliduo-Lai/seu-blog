@@ -14,6 +14,6 @@ public interface UserMapper {
 
     // 添加
     @Insert("insert into user(username,password,createdTime,updatedTime)" +
-            " values(#{username},#{password}),now(),now()")
+            " values(#{username},#{password},now(),now()) ")
     void add(String username, String password);
 }
