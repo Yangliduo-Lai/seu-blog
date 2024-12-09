@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;  // 导入 Date 类
 
@@ -20,14 +21,14 @@ import java.util.List;
 @Alias("comment")  // 为 MyBatis 指定别名
 
 public class Comment {
-    @commentId
-    private Long commentId;
-    private String nickname;
-    private String content;
-    private String avatar;
-    private Date createTime;
-    private Blog blog;
+    public enum Status { pending, approved, rejected }
 
-    private List<Comment> replyComments = new ArrayList<>();
-    private Comment parentComment;
+    @commentId
+    private Integer commentId;
+    private Integer blogId;
+    private Integer userId;
+    private String content;
+    private Integer parentId;
+    private Status status;
+    private LocalDateTime createdTime;
 }
