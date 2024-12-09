@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 /**
  * Tag 实体类
@@ -17,9 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @Alias("Tag")  // 为 MyBatis 指定别名
 public class Tag {
-    @tagId
-    private Long tagId;
-    private String name;
-    private List<Blog> blogs = new ArrayList<>();
-    private Date createTime;
+    @Id
+    private Integer tagId;
+    private String tagName;
+    private LocalDateTime createTime;
+    private Integer blogId;
+    private Integer userId;
 }

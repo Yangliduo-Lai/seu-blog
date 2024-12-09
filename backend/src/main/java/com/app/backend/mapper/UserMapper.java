@@ -4,8 +4,6 @@ import com.app.backend.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Mapper
 public interface UserMapper {
@@ -15,7 +13,7 @@ public interface UserMapper {
     User findByUserName(String username);
 
     // 添加
-    @Insert("insert into user(username,userpassword)" +
-            " values(#{username},#{userpassword}) ")
-    void add(String username, String userpassword);
+    @Insert("insert into user(username,password,createdTime,updatedTime)" +
+            " values(#{username},#{password}),now(),now()")
+    void add(String username, String password);
 }

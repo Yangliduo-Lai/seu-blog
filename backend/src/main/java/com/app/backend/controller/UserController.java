@@ -19,13 +19,13 @@ public class UserController {
     public Result register(String username, String password) {
         //查询用户
         User u = userService.findByUserName(username);
-        if(u == null) { // 用户名没有被占用
+        if (u == null) { // 用户名没有被占用
             // 注册
             userService.register(username,password);
             return Result.success();
         } else {
             // 占用
-            return Result.error("用户名已被占用");
+            return Result.error("用户名已被占用！");
         }
     }
 }

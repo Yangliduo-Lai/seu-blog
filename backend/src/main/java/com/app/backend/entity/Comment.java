@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;  // 导入 Date 类
@@ -23,7 +24,7 @@ import java.util.List;
 public class Comment {
     public enum Status { pending, approved, rejected }
 
-    @commentId
+    @Id
     private Integer commentId;
     private Integer blogId;
     private Integer userId;
