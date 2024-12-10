@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <h1>Login</h1>
+    <h1>SEU-BLOG</h1>
     <form @submit.prevent="login">
       <div class="form-group">
         <label for="username">Username:</label>
@@ -10,7 +10,10 @@
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="credentials.password" required>
       </div>
-      <button type="submit">Login</button>
+      <div class="button-container">
+        <button type="submit">Login</button>
+        <button type="button" @click="register">Register</button>
+      </div>
     </form>
   </div>
 </template>
@@ -71,17 +74,22 @@ input[type="password"]:focus {
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 0 8px rgba(0,95,175,0.25); /* More prominent shadow on focus */
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between; /* 按钮之间留有空间 */
+}
+
 button {
-  width: 100%;
-  padding: 12px; /* Comfortable padding */
-  background-color: #007BFF; /* Primary button color */
-  border-radius: 5px; /* Rounded corners */
+  width: 48%; /* 减少宽度以适应并排布局，留出一点空间 */
+  padding: 12px;
+  background-color: #007BFF;
+  border-radius: 5px;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  transition: background-color 0.3s;
 }
 
 button:hover, button:focus {
-  background-color: #0056b3; /* Darker shade on hover and focus */
+  background-color: #0056b3;
 }
 </style>
