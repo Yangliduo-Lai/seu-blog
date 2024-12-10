@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <h1>SEU-BLOG</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="onSubmit">
       <div class="form-group">
         <label for="username">Username:</label>
         <input type="text" id="username" v-model="credentials.username" required>
@@ -11,34 +11,82 @@
         <input type="password" id="password" v-model="credentials.password" required>
       </div>
       <div class="button-container">
-        <button type="submit">Login</button>
-        <button type="button" @click="register">Register</button>
+        <button type="submit">{{ isLogin ? 'Login' : 'Register' }}</button>
+        <button type="button" @click="toggleMode">{{ isLogin ? 'Register' : 'Login' }}</button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-
+import { reactive, ref } from 'vue';
+import axios from 'axios'; 
+import { useRouter } from 'vue-router'; 
+import { ElMessage } from 'element-plus'; 
 export default {
-  name: 'Login',
+  name: 'AuthForm',
   setup() {
     const credentials = ref({
       username: '',
       password: ''
     });
-
-    function login() {
-      alert(`Username: ${credentials.value.username}\nPassword: ${credentials.value.password}`);
-      // 实际应用中，这里应该发送请求到服务器
+    const isLogin = ref(true); 
+    const router = useRouter(); // 使用useRouter获取路由对象
+    function toggleMode() {
+      isLogin.value = !isLogin.value;
     }
+
+   async function onSubmit() {
+  try {
+    const formData = new URLSearchParams();
+    formData.append('username', credentials.value.username);
+    formData.append('password', credentials.value.password);
+
+    const response = await axios.post('/api/user/login', formData, {
+      headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      });
+
+    const { code, message, token } = response.data;
+
+
+    if (code === 0) { 
+      // 登录成功处理
+      localStorage.setItem('authToken', token); // 存储token
+      router.push('/home');
+      ElMessage({ message: 'Login successful!', type: 'success' }); // 成功提示
+    } else {
+      // 错误处理
+      switch (message) {
+        case "用户名错误":
+          ElMessage.error('Error: Username is incorrect.');
+          break;
+        case "密码错误":
+          ElMessage.error('Error: Password is incorrect.');
+          break;
+        case "login.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
+          ElMessage.error('Error: Password format is incorrect.');
+          break;
+        default:
+          ElMessage.error(`An error occurred: ${message}`);
+          break;
+      }
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    ElMessage.error('An unexpected error occurred, please try again.');
+  }
+}
 
     return {
       credentials,
-      login
+      onSubmit,
+      isLogin,
+      toggleMode
     };
   }
+  
 };
 </script>
 

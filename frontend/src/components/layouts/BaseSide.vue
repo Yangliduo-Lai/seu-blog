@@ -23,7 +23,7 @@
           <el-button type="primary" class="popover-button" @click="goToLogin">Login</el-button>
         </div>
         <div class="popover-content">
-          <el-button type="danger"  class="popover-button" @click="handleLogout">Logout</el-button>
+          <el-button type="danger"  class="popover-button" @click="goToLogin">Logout</el-button>
         </div>
       </el-popover>
 

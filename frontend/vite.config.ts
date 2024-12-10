@@ -36,6 +36,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VueSetupExtend(),
+    
     Components({
       extensions: ['vue', 'md'],
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
@@ -61,4 +62,14 @@ export default defineConfig({
       ]
     }),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080', // 目标服务器
+        changeOrigin: true, // 是否改变请求源
+        rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
+      },
+    },
+  },
+
 })
