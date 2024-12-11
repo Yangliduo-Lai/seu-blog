@@ -1,7 +1,10 @@
 package com.app.backend.entity;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
 public class Complaints {
     public enum Status { pending, resolved}
 

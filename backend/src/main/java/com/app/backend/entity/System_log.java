@@ -1,7 +1,10 @@
 package com.app.backend.entity;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
 public class System_log {
     public enum Target_type { article, user, comment }
 

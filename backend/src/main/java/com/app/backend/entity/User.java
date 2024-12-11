@@ -16,4 +16,6 @@ public class User {
     private LocalDateTime created_time;
     private LocalDateTime updated_time;
     private String avatar;
+    private String nickname;
+    private String signature;
 }

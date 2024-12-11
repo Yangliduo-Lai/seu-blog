@@ -1,7 +1,10 @@
 package com.app.backend.entity;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
 public class Comment {
     public enum Status { pending, approved, rejected }
 

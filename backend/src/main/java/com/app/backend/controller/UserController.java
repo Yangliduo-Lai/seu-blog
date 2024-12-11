@@ -38,7 +38,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/accountlogin")
     public Result<String> login(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {
         // 根据用户名查询用户
         User loginUser = userService.findByUserName(username);
