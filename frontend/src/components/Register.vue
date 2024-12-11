@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="register-container">
     <h1>SEU-BLOG</h1>
     <form @submit.prevent="onSubmit">
       <div class="form-group">
@@ -9,10 +9,15 @@
       <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="credentials.password" required>
+        <p v-if="passwordError" class="error">{{ passwordError }}</p>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="password" id="confirm-password" v-model="credentials.confirmPassword" required>
+        <p v-if="confirmPasswordError" class="error">{{ confirmPasswordError }}</p>
       </div>
       <div class="button-container">
-        <button type="submit">{{ isLogin ? 'Login' : 'Register' }}</button>
-        <button type="button" @click="goToRegister">Register</button>
+        <button type="submit">Register</button>
       </div>
     </form>
   </div>
@@ -24,83 +29,85 @@ import axios from 'axios';
 import { useRouter } from 'vue-router'; 
 import { ElMessage } from 'element-plus'; 
 
-
 export default {
-  name: 'AuthForm',
+  name: 'RegisterForm',
   setup() {
     const credentials = reactive({
       username: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     });
-    const isLogin = ref(true); 
-    const router = useRouter(); // 使用useRouter获取路由对象
-
+    const isLogin = ref(false); // 默认为注册模式
+    const router = useRouter();
+    const passwordError = ref('');
+    const confirmPasswordError = ref('');
 
     function toggleMode() {
-      isLogin.value = !isLogin.value;
+      router.push('/login'); // 跳转到登录页面
     }
 
-   async function onSubmit() {
-  try {
-    const formData = new URLSearchParams();
-    formData.append('username', credentials.value.username);
-    formData.append('password', credentials.value.password);
 
-    const response = await axios.post('/api/user/login', formData, {
-      headers: {
+    function validateConfirmPassword() {
+      if (credentials.password !== credentials.confirmPassword) {
+        ElMessage.error("Passwords do not match");
+        return false;
+      }
+      confirmPasswordError.value = '';
+      return true;
+    }
+
+    async function onSubmit() {
+      if (!validateConfirmPassword()) {
+        return;
+      }
+
+      try {
+        const formData = new URLSearchParams();
+        formData.append('username', credentials.username);
+        formData.append('password', credentials.password);
+
+        const response = await axios.post('/api/user/register', formData, {
+          headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
-      });
+        });
 
-    const { code, message, token } = response.data;
+        const { code, message, token } = response.data;
 
-
-    if (code === 0) { 
-      // 登录成功处理
-      localStorage.setItem('authToken', token); // 存储token
-      router.push('/home');
-      ElMessage({ message: 'Login successful!', type: 'success' }); // 成功提示
-    } else {
-      // 错误处理
-      switch (message) {
-        case "用户名错误":
-          ElMessage.error('Error: Username is incorrect.');
-          break;
-        case "密码错误":
-          ElMessage.error('Error: Password is incorrect.');
-          break;
-        case "login.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
+        if (code === 0) { 
+          localStorage.setItem('authToken', token); // 存储token
+          router.push('/home');
+          ElMessage({ message: 'Registration successful!', type: 'success' }); // 成功提示
+        } else {
+          switch(message){
+            case "register.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
           ElMessage.error('Error: Password format is incorrect.');
           break;
-        default:
-          ElMessage.error(`An error occurred: ${message}`);
+          default:
+          ElMessage.error(`An error occurred during registration: ${message}`);
           break;
+        }
+      }
+      } catch (error) {
+        console.error('Error during registration:', error);
+        ElMessage.error('An unexpected error occurred, please try again.');
       }
     }
-  } catch (error) {
-    console.error('Error during login:', error);
-    ElMessage.error('An unexpected error occurred, please try again.');
-  }
-}
-
-const goToRegister = () => {
-      router.push('/register'); 
-    };
 
     return {
       credentials,
       onSubmit,
       isLogin,
       toggleMode,
-      goToRegister // 确保此函数被返回
+      passwordError,
+      confirmPasswordError
     };
   }
-  
 };
 </script>
 
 <style scoped>
-.login-container {
+.register-container {
   max-width: 320px;  /* Slightly wider for better spacing */
   margin: 40px auto; /* Increased margin for better vertical spacing */
   padding: 30px; /* More padding for a better layout */
@@ -133,20 +140,28 @@ input[type="password"]:focus {
 
 .button-container {
   display: flex;
-  justify-content: space-between; /* 按钮之间留有空间 */
+  justify-content: center; /* 水平居中对齐 */
+  margin-top: 20px; /* 可选：增加顶部间距以改善布局 */
 }
 
 button {
-  width: 48%; /* 减少宽度以适应并排布局，留出一点空间 */
+  width: 100%; /* 让按钮占据整个宽度 */
   padding: 12px;
   background-color: #007BFF;
   border-radius: 5px;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
+  box-sizing: border-box; /* 确保内边距和边框包含在元素的总宽度和高度之内 */
 }
 
 button:hover, button:focus {
   background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 </style>
