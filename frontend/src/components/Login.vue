@@ -19,47 +19,52 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue';
 import axios from 'axios'; 
 import { useRouter } from 'vue-router'; 
 import { ElMessage } from 'element-plus'; 
+import { ref,onMounted} from "vue";
+import { useAuthStore } from '~/stores/auth'; // 引入 Pinia store
 
 
 export default {
   name: 'AuthForm',
   setup() {
-    const credentials = reactive({
+    const credentials = ref({
       username: '',
       password: ''
     });
-    const isLogin = ref(true); 
-    const router = useRouter(); // 使用useRouter获取路由对象
-
+    const isLogin = ref(true);
+    const router = useRouter();
+    const authStore = useAuthStore(); // 使用 Pinia store
 
     function toggleMode() {
       isLogin.value = !isLogin.value;
     }
 
-   async function onSubmit() {
+    async function onSubmit() {
   try {
     const formData = new URLSearchParams();
     formData.append('username', credentials.value.username);
     formData.append('password', credentials.value.password);
 
-    const response = await axios.post('/api/user/login', formData, {
+    const response = await axios.post('http://127.0.0.1:4523/m2/5596245-5274544-default/243022104', formData, {
       headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-      });
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
 
-    const { code, message, token } = response.data;
+    const { code, message, data } = response.data;
 
+    if (code === 0) {
+      // 解析 data 字段
+      const parsedData = JSON.parse(data); // 将 JSON 字符串转换为对象
+      const { role, token } = parsedData;
 
-    if (code === 0) { 
       // 登录成功处理
-      localStorage.setItem('authToken', token); // 存储token
+      authStore.login({ username: credentials.value.username, roles: [role] }); // 更新 Pinia store 状态
+      localStorage.setItem('token', token); // 存储 token（如果需要）
       router.push('/home');
-      ElMessage({ message: 'Login successful!', type: 'success' }); // 成功提示
+      ElMessage({ message: 'Login successful!', type: 'success' });
     } else {
       // 错误处理
       switch (message) {
@@ -83,8 +88,8 @@ export default {
   }
 }
 
-const goToRegister = () => {
-      router.push('/register'); 
+    const goToRegister = () => {
+      router.push('/register');
     };
 
     return {
@@ -92,10 +97,9 @@ const goToRegister = () => {
       onSubmit,
       isLogin,
       toggleMode,
-      goToRegister // 确保此函数被返回
+      goToRegister
     };
   }
-  
 };
 </script>
 

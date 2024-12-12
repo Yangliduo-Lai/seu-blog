@@ -19,7 +19,7 @@ import "uno.css";
 import "element-plus/theme-chalk/src/message.scss";
 
 import router from './router'
-
+import { createPinia } from 'pinia'; // 导入 Pinia
 library.add(faUserSecret, faCoffee);
 
 const app = createApp(App);
@@ -28,6 +28,10 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 app.use(ElementPlus);
 app.use(router);
+
+// 创建并使用 Pinia store
+const pinia = createPinia();
+app.use(pinia);
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 

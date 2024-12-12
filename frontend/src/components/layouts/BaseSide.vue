@@ -64,6 +64,12 @@
         <RouterLink to="/about">ABOUT</RouterLink>
       </el-menu-item>
 
+      <!-- Management (仅管理员可见) -->
+      <el-menu-item v-if="isAdmin" index="6">
+        <el-icon><Management /></el-icon>
+        <RouterLink to="/management">Management</RouterLink>
+      </el-menu-item>
+
       <!-- 最下面的三个图标 -->
       <div class="menu-icons">
         <div class="github">
@@ -81,14 +87,33 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref,onMounted,watch,computed} from "vue";
 import { RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router';
-
-import { Location, Document, Menu as IconMenu, Setting } from "@element-plus/icons-vue";
-
+import { Location, Document, Menu as IconMenu, Setting, Management } from "@element-plus/icons-vue";
+import avatar from '@assets/avatar.png';
+import axios from "axios";
+import { useAuthStore } from "~/stores/auth";
 
 const router = useRouter();
+let items = ref([])
+
+const authStore = useAuthStore();
+const isAdmin = computed(() => authStore.userRoles.includes('admin'));
+
+const fetchData = async () => {
+  try {
+    let res = await axios.get('http://127.0.0.1:4523/m2/5596245-5274544-default/243448165');
+    console.log(res.data);
+    items.value = res.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+// 当组件首次加载时调用 fetchData
+fetchData();
+
 
 
 const goToLogin = () => {
@@ -96,7 +121,7 @@ const goToLogin = () => {
 };
 
 // 使用别名导入图片
-import avatar from '@assets/avatar.png';
+
 
 const isCollapse = ref(true);
 const handleOpen = (key: string, keyPath: string[]) => {
@@ -109,16 +134,6 @@ const handleClose = (key: string, keyPath: string[]) => {
 // 将导入的图片路径赋值给响应式变量
 const avatarSrc = ref(avatar);
 
-// 定义处理函数
-const handleLoginManagement = () => {
-  console.log('用户点击了登录管理');
-  // 在这里添加你的登录管理逻辑
-};
-
-const handleLogout = () => {
-  console.log('用户点击了登出');
-  // 在这里添加你的登出逻辑
-};
 </script>
 
 <style scoped>
