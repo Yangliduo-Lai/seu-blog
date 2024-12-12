@@ -11,4 +11,13 @@ public interface UserService {
 
     // 返回用户类型
     String getRole(String username);
+
+    // 用户信息更新
+    void infoUpdate(User user);
+
+    // 用户头像更新
+    void updateAvatar(String avatarUrl);
+
+    // 密码更新
+    void updatePwd(String password);
 }
