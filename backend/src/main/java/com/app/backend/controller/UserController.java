@@ -132,4 +132,10 @@ public class UserController {
         userService.updatePwd(newPassword);
         return Result.success();
     }
+
+    @GetMapping("/logout")
+    public Result<String> logout() {
+        ThreadLocalUtil.remove();
+        return Result.success("登出成功");
+    }
 }
