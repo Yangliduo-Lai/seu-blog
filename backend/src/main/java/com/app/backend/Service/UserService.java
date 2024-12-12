@@ -8,4 +8,7 @@ public interface UserService {
 
     // 注册
     void register(String username, String password);
+
+    // 返回用户类型
+    String getRole(String username);
 }

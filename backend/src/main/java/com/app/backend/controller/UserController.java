@@ -6,6 +6,8 @@ import com.app.backend.entity.Result;
 import com.app.backend.utils.JwtUtil;
 import com.app.backend.utils.Md5Util;
 import jakarta.validation.constraints.Pattern;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,9 +55,22 @@ public class UserController {
             claims.put("id",loginUser.getUser_id());
             claims.put("username",loginUser.getUser_name());
             String token = JwtUtil.genToken(claims);
+
             return Result.success(token);
         } else {
             return Result.error("密码错误");
         }
+    }
+
+    @PostMapping("/role")
+    public Result<String> getRole(String username) {
+        // 根据用户名查询用户
+        User loginUser = userService.findByUserName(username);
+        // 判断该用户是否存在
+        if (loginUser == null) {
+            return Result.error("用户名错误");
+        }
+        //返回用户类型
+        return Result.success(userService.getRole(username));
     }
 }

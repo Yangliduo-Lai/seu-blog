@@ -26,4 +26,9 @@ public class UserServiceImpl implements UserService {
         // 添加
         userMapper.add(username,md5String);
     }
+
+    @Override
+    public String getRole(String username) {
+        return userMapper.findRoleByUsername(username);
+    }
 }
