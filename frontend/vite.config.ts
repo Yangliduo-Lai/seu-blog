@@ -24,6 +24,8 @@ export default defineConfig({
     alias: {
       '~/': `${pathSrc}/`,
       '@assets': '/src/assets',
+      '@utils': '/src/utils',
+      '@store': '/src/store',
     },
   },
   css: {

@@ -81,11 +81,17 @@ export default {
         } else {
           switch(message){
             case "register.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
-          ElMessage.error('Error: Password format is incorrect.');
-          break;
-          default:
-          ElMessage.error(`An error occurred during registration: ${message}`);
-          break;
+            ElMessage.error('Error: Password format is incorrect.');
+            break;
+            case "register.password: 需要匹配正则表达式\"^\\S{5,16}$\", register.username: 需要匹配正则表达式\"^\\S{5,16}$\"":
+            ElMessage.error('Error: Password and username format is incorrect.');
+            break;
+            case "register.username: 需要匹配正则表达式\"^\\S{5,16}$\", register.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
+            ElMessage.error('Error: Password and username format is incorrect.');
+            break;
+            default:
+            ElMessage.error(`An error occurred during registration: ${message}`);
+           break;
         }
       }
       } catch (error) {
