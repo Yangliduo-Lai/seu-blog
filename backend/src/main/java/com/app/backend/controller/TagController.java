@@ -5,10 +5,9 @@ import com.app.backend.entity.Result;
 import com.app.backend.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tag")
@@ -21,5 +20,11 @@ public class TagController {
     public Result addTag(@RequestBody @Validated Tag tag) {
         tagService.add(tag);
         return Result.success();
+    }
+
+    @GetMapping("/list")
+    public Result<List<Tag>> tagList() {
+        List<Tag> ts = tagService.list();
+        return  Result.success(ts);
     }
 }

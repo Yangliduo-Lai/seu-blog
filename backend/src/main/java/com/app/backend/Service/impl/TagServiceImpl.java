@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,5 +28,12 @@ public class TagServiceImpl implements TagService {
         tag.setUserId(userId);
 
         tagMapper.add(tag);
+    }
+
+    @Override
+    public List<Tag> list() {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("id");
+        return tagMapper.list(userId);
     }
 }
