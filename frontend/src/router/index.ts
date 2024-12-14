@@ -9,6 +9,7 @@ import About from '../components/About.vue'
 import Blog from '../components/Blog.vue'
 import ManagementDashboard from '~/components/ManagementDashboard.vue'
 import Register from '~/components/Register.vue'
+import Userinfo from '~/components/Userinfo.vue'
 
 // 创建路由器
 const router = createRouter({
@@ -49,6 +50,10 @@ const router = createRouter({
     {
       path:'/register',
       component:Register
+    },
+    {
+      path:'/userinfo',
+      component:Userinfo
     }
   ]
 })

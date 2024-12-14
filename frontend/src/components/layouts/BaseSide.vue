@@ -28,9 +28,13 @@
       </el-popover>
 
       <!-- 用户名 -->
-      <el-text class="user-name" size="large" tag="b">C++ Blog</el-text>
+      <el-text class="user-name" size="large" tag="b">{{ userInfo.username }}</el-text>
+  
+     <!-- 昵称 -->
+      <el-text v-if="userInfo.nickname" class="nickname" size="small">{{ userInfo.nickname }}</el-text>
+  
       <!-- 个性签名 -->
-      <el-text class="tagline" size="small">Just a blog about C++</el-text>
+      <el-text v-if="userInfo.signature" class="tagline" size="small">{{ userInfo.signature }}</el-text>
     </div>
 
     <div class="menu">
@@ -64,8 +68,16 @@
         <RouterLink to="/about">ABOUT</RouterLink>
       </el-menu-item>
 
+      
+
+      <!-- info (仅当用户已登录时可见) -->
+      <el-menu-item v-if="isLoggedIn" index="6">
+        <el-icon><User /></el-icon>        
+        <RouterLink to="/userinfo">USER</RouterLink>
+      </el-menu-item>
+
       <!-- Management (仅管理员可见) -->
-      <el-menu-item v-if="isAdmin" index="6">
+      <el-menu-item v-if="isAdmin" index="7">
         <el-icon><Management /></el-icon>
         <RouterLink to="/management">Management</RouterLink>
       </el-menu-item>
@@ -87,19 +99,30 @@
 </template>
 
 <script lang="ts" setup>
-import { ref,onMounted,watch,computed} from "vue";
-import { RouterLink } from 'vue-router';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, watch, computed } from "vue";
+import { RouterLink, useRouter } from 'vue-router';
 import { Location, Document, Menu as IconMenu, Setting, Management } from "@element-plus/icons-vue";
 import avatar from '@assets/avatar.png';
 import axios from "axios";
 import { useAuthStore } from "~/stores/auth";
 
 const router = useRouter();
-let items = ref([])
+let items = ref([]);
 
 const authStore = useAuthStore();
 const isAdmin = computed(() => authStore.userRoles.includes('admin'));
+const isLoggedIn = computed(() => authStore.isAuthenticated);
+const userInfo = ref({
+  userid: null,
+  username: '',
+  email: '',
+  role: '',
+  createdTime: '',
+  updatedTime: '',
+  avatar: null,
+  nickname: null,
+  signature: ''
+});
 
 const fetchData = async () => {
   try {
@@ -111,17 +134,69 @@ const fetchData = async () => {
   }
 };
 
-// 当组件首次加载时调用 fetchData
-fetchData();
+// 重置用户信息到默认值
+const resetUserInfo = () => {
+  userInfo.value = {
+    userid: null,
+    username: 'Guest',
+    email: '',
+    role: '',
+    createdTime: '',
+    updatedTime: '',
+    avatar: null,
+    nickname: null,
+    signature: 'please login'
+  };
+  // 设置默认头像
+  avatarSrc.value = avatar;
+};
 
+// 获取用户信息
+const fetchUserInfo = async () => {
+  try {
+    if (authStore.isAuthenticated) { 
+      let res = await axios.get('http://127.0.0.1:4523/m2/5596245-5274544-default/244580038');
+      if (res.data.code === 0) {
+        userInfo.value = res.data.data;
+        if (res.data.data.avatar) {
+          avatarSrc.value = res.data.data.avatar;
+        }
+      } else {
+        console.error("Error fetching user info:", res.data.message);
+      }
+    } else {
+      resetUserInfo();
+    }
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    resetUserInfo();
+  }
+};
 
+// 当组件首次加载时调用 fetchData 和 fetchUserInfo
+onMounted(() => {
+  fetchData();
+  fetchUserInfo();
+});
+
+// 监听认证状态变化
+watch(() => authStore.isAuthenticated, async (newVal) => {
+  if (newVal) {
+    await fetchUserInfo();
+  } else {
+    resetUserInfo();
+  }
+});
+
+// 登录处理
+const handleLogin = async () => {
+  await authStore.login({ username: 'user', roles: ['user'] });
+  await fetchUserInfo();
+};
 
 const goToLogin = () => {
   router.push('/login');
 };
-
-// 使用别名导入图片
-
 
 const isCollapse = ref(true);
 const handleOpen = (key: string, keyPath: string[]) => {

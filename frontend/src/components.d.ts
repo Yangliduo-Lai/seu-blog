@@ -37,5 +37,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SubTags: typeof import('./components/subpages/SubTags.vue')['default']
     Tags: typeof import('./components/Tags.vue')['default']
+    Userinfo: typeof import('./components/Userinfo.vue')['default']
   }
 }
