@@ -56,22 +56,13 @@ public class UserController {
 
             String token = JwtUtil.genToken(claims);
 
-            return Result.success(token);
+            String role = loginUser.getRole().toString();
+            String json = String.format("{\"role\":\"%s\",\"token\":\"%s\"}", role, token);
+
+            return Result.success(json);
         } else {
             return Result.error("密码错误");
         }
-    }
-
-    @PostMapping("/role")
-    public Result<String> getRole(String username) {
-        // 根据用户名查询用户
-        User loginUser = userService.findByUserName(username);
-        // 判断该用户是否存在
-        if (loginUser == null) {
-            return Result.error("用户名错误");
-        }
-        //返回用户类型
-        return Result.success(userService.getRole(username));
     }
 
     @GetMapping("/info")

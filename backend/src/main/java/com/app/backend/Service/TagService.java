@@ -10,4 +10,10 @@ public interface TagService {
 
     // 列表查询
     List<Tag> list();
+
+    // 根据id查询tag信息
+    Tag findById(Integer tagId);
+
+    // 更新tag信息
+    void update(Tag tag);
 }

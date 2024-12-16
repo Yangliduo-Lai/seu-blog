@@ -36,4 +36,16 @@ public class TagServiceImpl implements TagService {
         Integer userId = (Integer) map.get("id");
         return tagMapper.list(userId);
     }
+
+    @Override
+    public Tag findById(Integer tagId) {
+        Tag c = tagMapper.findById(tagId);
+        return c;
+    }
+
+    @Override
+    public void update(Tag tag) {
+        tag.setUpdatedTime(LocalDateTime.now());
+        tagMapper.update(tag);
+    }
 }

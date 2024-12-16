@@ -11,10 +11,10 @@ public class Blog {
     private Integer blogId;
     private String title;
     private String content;
-    private String tags;
-    private String category;
+    private Integer authorId;
+    private Integer views;
     private Status status;
-    private Integer author;
-    private LocalDateTime created_time;
-    private LocalDateTime updated_time;
+    private LocalDateTime createdTime;
+    private LocalDateTime updatedTime;
+    private Integer categoryId;
 }

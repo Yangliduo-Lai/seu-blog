@@ -32,11 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getRole(String username) {
-        return userMapper.findRoleByUsername(username);
-    }
-
-    @Override
     public void infoUpdate(User user) {
         user.setUpdatedTime(LocalDateTime.now());
         userMapper.infoUpdate(user);

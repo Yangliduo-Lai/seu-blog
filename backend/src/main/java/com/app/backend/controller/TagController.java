@@ -17,7 +17,7 @@ public class TagController {
     private TagService tagService;
 
     @PostMapping("/add")
-    public Result addTag(@RequestBody @Validated Tag tag) {
+    public Result addTag(@RequestBody @Validated(Tag.Add.class)Tag tag) {
         tagService.add(tag);
         return Result.success();
     }
@@ -26,5 +26,17 @@ public class TagController {
     public Result<List<Tag>> tagList() {
         List<Tag> ts = tagService.list();
         return  Result.success(ts);
+    }
+
+    @GetMapping("/detail")
+    public Result<Tag> detail(Integer tagId) {
+        Tag t = tagService.findById(tagId);
+        return Result.success(t);
+    }
+
+    @PutMapping("/update")
+    public Result updateTag(@RequestBody @Validated(Tag.Update.class) Tag tag) {
+        tagService.update(tag);
+        return Result.success();
     }
 }

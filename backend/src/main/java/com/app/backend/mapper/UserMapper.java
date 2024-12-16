@@ -18,10 +18,6 @@ public interface UserMapper {
             " values(#{username},#{password},now(),now()) ")
     void add(String username, String password);
 
-    // 根据用户名查询用户类型
-    @Select("select role from user where username=#{username}")
-    String findRoleByUsername(String username);
-
     // 用户信息更新
     @Update("update user set nickname=#{nickname},email=#{email},updatedTime=#{updatedTime},signature=#{signature} where userId = #{userid}")
     void infoUpdate(User user);
