@@ -68,8 +68,6 @@
         <RouterLink to="/about">ABOUT</RouterLink>
       </el-menu-item>
 
-      
-
       <!-- info (仅当用户已登录时可见) -->
       <el-menu-item v-if="isLoggedIn" index="6">
         <el-icon><User /></el-icon>        
@@ -81,6 +79,12 @@
         <el-icon><Management /></el-icon>
         <RouterLink to="/management">Management</RouterLink>
       </el-menu-item>
+
+    <!-- Editor (仅管理员和博主可见) -->
+    <el-menu-item v-if="isAdmin || isBlogger" index="8">
+      <el-icon><Edit /></el-icon>
+      <RouterLink to="/editor">Editor</RouterLink>
+    </el-menu-item>
 
       <!-- 最下面的三个图标 -->
       <div class="menu-icons">
@@ -116,6 +120,7 @@ const authStore = useAuthStore();
 const userStore = useUserStore(); // 初始化 UserStore
 
 const isAdmin = computed(() => authStore.userRoles.includes('admin'));
+const isBlogger = computed(() => authStore.userRoles.includes('blogger')); // 新增对blogger角色的判断
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 
 // 用户信息的响应式变量，明确指定类型为 UserInfo

@@ -13,7 +13,7 @@ declare module 'vue' {
     BaseSide: typeof import('./components/layouts/BaseSide.vue')['default']
     Blog: typeof import('./components/Blog.vue')['default']
     Categories: typeof import('./components/Categories.vue')['default']
-    ElAvatar: typeof import('element-plus/es')['ElAvatar']
+    Editor: typeof import('./components/Editor.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCol: typeof import('element-plus/es')['ElCol']

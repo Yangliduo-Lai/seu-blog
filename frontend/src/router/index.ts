@@ -10,7 +10,7 @@ import Blog from '../components/Blog.vue'
 import ManagementDashboard from '~/components/ManagementDashboard.vue'
 import Register from '~/components/Register.vue'
 import Userinfo from '~/components/Userinfo.vue'
-
+import Editor from '~/components/Editor.vue'
 // 创建路由器
 const router = createRouter({
   history:createWebHistory(), // 路由器的工作模式
@@ -54,6 +54,10 @@ const router = createRouter({
     {
       path:'/userinfo',
       component:Userinfo
+    },
+    {
+      path:'/editor',
+      component:Editor
     }
   ]
 })

@@ -60,7 +60,7 @@ const errors = ref({
 });
 
 // 默认头像路径
-const defaultAvatarSrc = new URL('@/assets/avatar.png', import.meta.url).href;
+const defaultAvatarSrc = 'https://free4.yunpng.top/2024/12/16/675fd9e3c54d0.png';
 
 const userInfo = ref({
   userid: null,
