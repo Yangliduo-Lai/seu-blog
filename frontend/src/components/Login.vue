@@ -24,7 +24,7 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'; 
 import { ref,onMounted} from "vue";
 import { useAuthStore } from '~/stores/auth'; // 引入 Pinia store
-
+import axiosInstance from '~/utils/axiosInstance';
 
 export default {
   name: 'AuthForm',
@@ -35,58 +35,53 @@ export default {
     });
     const isLogin = ref(true);
     const router = useRouter();
-    const authStore = useAuthStore(); // 使用 Pinia store
-
-    function toggleMode() {
-      isLogin.value = !isLogin.value;
-    }
+    const authStore = useAuthStore();
 
     async function onSubmit() {
-  try {
-    const formData = new URLSearchParams();
-    formData.append('username', credentials.value.username);
-    formData.append('password', credentials.value.password);
+      try {
+        const formData = new URLSearchParams();
+        formData.append('username', credentials.value.username);
+        formData.append('password', credentials.value.password);
 
-    const response = await axios.post('http://127.0.0.1:4523/m2/5596245-5274544-default/243022104', formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
+        const response = await axiosInstance.post('user/accountlogin', formData, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
 
-    const { code, message, data } = response.data;
+        const { code, message, data } = response.data;
 
-    if (code === 0) {
-      // 解析 data 字段
-      const parsedData = JSON.parse(data); // 将 JSON 字符串转换为对象
-      const { role, token } = parsedData;
+        if (code === 0) {
+          const parsedData = JSON.parse(data); // 将 JSON 字符串转换为对象
+          const { role, token } = parsedData;
 
-      // 登录成功处理
-      authStore.login({ username: credentials.value.username, roles: [role] }); // 更新 Pinia store 状态
-      localStorage.setItem('token', token); // 存储 token（如果需要）
-      router.push('/home');
-      ElMessage({ message: 'Login successful!', type: 'success' });
-    } else {
-      // 错误处理
-      switch (message) {
-        case "用户名错误":
-          ElMessage.error('Error: Username is incorrect.');
-          break;
-        case "密码错误":
-          ElMessage.error('Error: Password is incorrect.');
-          break;
-        case "login.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
-          ElMessage.error('Error: Password format is incorrect.');
-          break;
-        default:
-          ElMessage.error(`An error occurred: ${message}`);
-          break;
+          // 登录成功处理
+          authStore.login({ username: credentials.value.username, roles: [role] });
+          localStorage.setItem('token', token); // 存储 token
+          router.push('/home');
+          ElMessage({ message: 'Login successful!', type: 'success' });
+        } else {
+          // 错误处理...
+          switch (message) {
+            case "用户名错误":
+              ElMessage.error('Error: Username is incorrect.');
+              break;
+            case "密码错误":
+              ElMessage.error('Error: Password is incorrect.');
+              break;
+            case "login.password: 需要匹配正则表达式\"^\\S{5,16}$\"":
+              ElMessage.error('Error: Password format is incorrect.');
+              break;
+            default:
+              ElMessage.error(`An error occurred: ${message}`);
+              break;
+          }
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        ElMessage.error('An unexpected error occurred, please try again.');
       }
     }
-  } catch (error) {
-    console.error('Error during login:', error);
-    ElMessage.error('An unexpected error occurred, please try again.');
-  }
-}
 
     const goToRegister = () => {
       router.push('/register');
@@ -96,7 +91,6 @@ export default {
       credentials,
       onSubmit,
       isLogin,
-      toggleMode,
       goToRegister
     };
   }

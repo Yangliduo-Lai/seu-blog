@@ -105,10 +105,11 @@ import { Location, Document, Menu as IconMenu, Setting, Management } from "@elem
 import avatar from '@assets/avatar.png';
 import axios from "axios";
 import { useAuthStore } from "~/stores/auth";
-
+import axiosInstance from "~/utils/axiosInstance";
 const router = useRouter();
 let items = ref([]);
 
+const avatarSrc = ref(avatar);
 const authStore = useAuthStore();
 const isAdmin = computed(() => authStore.userRoles.includes('admin'));
 const isLoggedIn = computed(() => authStore.isAuthenticated);
@@ -126,7 +127,7 @@ const userInfo = ref({
 
 const fetchData = async () => {
   try {
-    let res = await axios.get('http://127.0.0.1:4523/m2/5596245-5274544-default/243448165');
+    let res = await axiosInstance.get('user/info');
     console.log(res.data);
     items.value = res.data;
   } catch (error) {
@@ -155,7 +156,7 @@ const resetUserInfo = () => {
 const fetchUserInfo = async () => {
   try {
     if (authStore.isAuthenticated) { 
-      let res = await axios.get('http://127.0.0.1:4523/m2/5596245-5274544-default/244580038');
+      let res = await axiosInstance.get('user/info');
       if (res.data.code === 0) {
         userInfo.value = res.data.data;
         if (res.data.data.avatar) {
@@ -206,8 +207,7 @@ const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
 
-// 将导入的图片路径赋值给响应式变量
-const avatarSrc = ref(avatar);
+
 
 </script>
 

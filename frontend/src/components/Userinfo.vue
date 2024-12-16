@@ -1,111 +1,161 @@
 <template>
-    <div class="user-profile-container">
-      <div class="user-profile">
-        <div class="profile-section user-info">
-          <img :src="avatarSrc" alt="User Avatar" class="avatar" />
-          <h3>{{ userInfo.nickname || userInfo.username }}</h3>
-          <p><i class="fas fa-envelope"></i> {{ userInfo.email }}</p>
-          <p><i class="fas fa-briefcase"></i> {{ userInfo.role }}</p>
-          <p v-if="userInfo.location"><i class="fas fa-map-marker-alt"></i> {{ userInfo.location }}</p>
-          <p v-if="userInfo.signature">{{ userInfo.signature }}</p>
-        </div>
-        <div class="profile-section user-settings">
-          <form @submit.prevent="saveUserInfo">
-            <div class="form-group">
-              <label for="username">* 姓名</label>
-              <input type="text" id="username" v-model="userInfo.username" required />
-            </div>
-            <div class="form-group">
-              <label for="email">* 邮箱</label>
-              <input type="email" id="email" v-model="userInfo.email" required />
-            </div>
-            <div class="form-group">
-              <label for="role">职位</label>
-              <input type="text" id="role" v-model="userInfo.role" />
-            </div>
-            <div class="form-group">
-              <label for="location">地址</label>
-              <input type="text" id="location" v-model="userInfo.location" />
-            </div>
-            <div class="form-group">
-              <label for="signature">签名</label>
-              <textarea id="signature" v-model="userInfo.signature"></textarea>
-            </div>
-            <div class="form-group">
-              <button type="reset" class="reset-btn">重置</button>
-              <button type="submit" class="save-btn">保存</button>
-            </div>
-          </form>
-        </div>
+  <div class="user-profile-container">
+    <div class="user-profile">
+      <div class="profile-section user-info">
+        <img :src="avatarSrc" alt="User Avatar" class="avatar" />
+        <h3>{{ userInfo.nickname || userInfo.username }}</h3>
+        <p><i class="fas fa-envelope"></i> {{ userInfo.email }}</p>
+        <p><i class="fas fa-briefcase"></i> {{ userInfo.role }}</p>
+        <p v-if="userInfo.location"><i class="fas fa-map-marker-alt"></i> {{ userInfo.location }}</p>
+        <p v-if="userInfo.signature">{{ userInfo.signature }}</p>
+      </div>
+      <div class="profile-section user-settings">
+        <form @submit.prevent="saveUserInfo">
+          <div class="form-group">
+            <label for="nickname">* 昵称</label>
+            <input type="text" id="nickname" v-model="userInfo.nickname" required maxlength="10" />
+            <span v-if="errors.nickname" class="error">{{ errors.nickname }}</span>
+          </div>
+          <div class="form-group">
+            <label for="email">* 邮箱</label>
+            <input type="email" id="email" v-model="userInfo.email" required />
+            <span v-if="errors.email" class="error">{{ errors.email }}</span>
+          </div>
+          <div class="form-group">
+            <label for="role">职位</label>
+            <input type="text" id="role" v-model="userInfo.role" />
+          </div>
+          <div class="form-group">
+            <label for="location">地址</label>
+            <input type="text" id="location" v-model="userInfo.location" />
+          </div>
+          <div class="form-group">
+            <label for="signature">签名</label>
+            <textarea id="signature" v-model="userInfo.signature" maxlength="100"></textarea>
+            <span v-if="errors.signature" class="error">{{ errors.signature }}</span>
+          </div>
+          <div class="form-group">
+            <button type="reset" class="reset-btn">重置</button>
+            <button type="submit" class="save-btn">保存</button>
+          </div>
+        </form>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
-  <script lang="ts" setup>
-  import { ref, onMounted,watch} from 'vue';
-  import axios from 'axios';
-  import avatar from '@assets/avatar.png';
-  import { useAuthStore } from '~/stores/auth';
-  
-  const authStore = useAuthStore();
-  const userInfo = ref({
-    username: '',
-    email: '',
-    role: '',
-    createdTime: '',
-    updatedTime: '',
-    avatar: null,
-    nickname: null,
-    location: null,
-    signature: ''
-  });
-  
-  // 将导入的图片路径赋值给响应式变量
-  const avatarSrc = ref(avatar);
-  
-  // 获取用户信息
-  const fetchUserInfo = async () => {
-    try {
-      if (authStore.isAuthenticated) {
-        let res = await axios.get('http://127.0.0.1:4523/m2/5596245-5274544-default/244580038');
-        if (res.data.code === 0) {
-          userInfo.value = res.data.data;
-          // 如果有头像URL，更新avatarSrc
-          if (res.data.data.avatar) {
-            avatarSrc.value = res.data.data.avatar;
-          }
-        } else {
-          console.error("Error fetching user info:", res.data.message);
-        }
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue';
+import axiosInstance from '~/utils/axiosInstance';
+import { useAuthStore } from '~/stores/auth';
+
+const authStore = useAuthStore();
+const errors = ref({
+  nickname: '',
+  email: '',
+  signature: ''
+});
+
+// 默认头像路径
+const defaultAvatarSrc = new URL('@/assets/avatar.png', import.meta.url).href;
+
+const userInfo = ref({
+  userid: null as number | null,
+  username: '',
+  email: '',
+  role: '',
+  createdTime: '',
+  updatedTime: '',
+  avatar: null,
+  nickname: '',
+  location: null,
+  signature: ''
+});
+
+// 将导入的图片路径赋值给响应式变量
+const avatarSrc = ref(defaultAvatarSrc);
+
+// 获取用户信息
+const fetchUserInfo = async () => {
+  try {
+    if (authStore.isAuthenticated) {
+      let res = await axiosInstance.get('user/info');
+      if (res.data.code === 0) {
+        userInfo.value = { ...res.data.data, userid: res.data.data.userid }; // 确保 userid 被正确赋值
+        // 如果有头像URL，更新avatarSrc；否则使用默认头像
+        avatarSrc.value = res.data.data.avatar ? res.data.data.avatar : defaultAvatarSrc;
+      } else {
+        console.error("Error fetching user info:", res.data.message);
       }
-    } catch (error) {
-      console.error("Error fetching user info:", error);
     }
-  };
-  
-  // 保存用户信息
-  const saveUserInfo = async () => {
-    try {
-      // 在这里放置实际的保存逻辑，例如发送POST请求更新用户信息
-      console.log('Saving user info:', userInfo.value);
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+  }
+};
+
+// 表单验证函数
+const validateForm = (): boolean => {
+  let isValid = true;
+
+  if (!userInfo.value.nickname.trim() || userInfo.value.nickname.length > 10) {
+    errors.value.nickname = '昵称必须是1到10个字符之间。';
+    isValid = false;
+  } else {
+    errors.value.nickname = '';
+  }
+
+  if (!/\S+@\S+\.\S+/.test(userInfo.value.email)) {
+    errors.value.email = '请输入有效的电子邮件地址。';
+    isValid = false;
+  } else {
+    errors.value.email = '';
+  }
+
+  if (!userInfo.value.signature.trim() || userInfo.value.signature.length > 100) {
+    errors.value.signature = '签名必须是1到100个字符之间。';
+    isValid = false;
+  } else {
+    errors.value.signature = '';
+  }
+
+  return isValid;
+};
+
+// 保存用户信息
+const saveUserInfo = async () => {
+  if (!validateForm()) return;
+
+  try {
+    const response = await axiosInstance.put('/user/info/update', {
+      userid: userInfo.value.userid, // 确保包含 userid
+      nickname: userInfo.value.nickname,
+      email: userInfo.value.email,
+      signature: userInfo.value.signature
+    });
+    if (response.data.code === 0) {
       alert('用户信息已保存！');
-    } catch (error) {
-      console.error("Error saving user info:", error);
+      // 成功保存后的处理逻辑...
+    } else {
+      alert(response.data.message || '保存失败，请稍后再试。');
     }
-  };
-  
-  // 当组件首次加载时调用 fetchUserInfo
-  onMounted(() => {
-    fetchUserInfo();
-  });
-  
-  // 监听认证状态变化
-  watch(() => authStore.isAuthenticated, async (newVal) => {
-    if (newVal) {
-      await fetchUserInfo();
-    }
-  });
-  </script>
+  } catch (error) {
+    console.error("Error saving user info:", error);
+    alert('保存过程中发生错误，请检查网络连接或稍后再试。');
+  }
+};
+
+// 当组件首次加载时调用 fetchUserInfo
+onMounted(() => {
+  fetchUserInfo();
+});
+
+// 监听认证状态变化
+watch(() => authStore.isAuthenticated, async (newVal) => {
+  if (newVal) {
+    await fetchUserInfo();
+  }
+});
+</script>
   
   <style scoped>
   /* 保留原有样式 */
@@ -203,4 +253,9 @@
   .save-btn:hover {
     background-color: #1e57a9;
   }
+  .error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
   </style>
