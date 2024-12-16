@@ -48,8 +48,11 @@
 import { ref, onMounted, watch } from 'vue';
 import axiosInstance from '~/utils/axiosInstance';
 import { useAuthStore } from '~/stores/auth';
+import {useUserStore} from "~/stores/user";
+
 
 const authStore = useAuthStore();
+const userStore = useUserStore(); // 初始化 UserStore
 const errors = ref({
   nickname: '',
   email: '',
@@ -60,7 +63,7 @@ const errors = ref({
 const defaultAvatarSrc = new URL('@/assets/avatar.png', import.meta.url).href;
 
 const userInfo = ref({
-  userid: null as number | null,
+  userid: null,
   username: '',
   email: '',
   role: '',
@@ -84,6 +87,7 @@ const fetchUserInfo = async () => {
         userInfo.value = { ...res.data.data, userid: res.data.data.userid }; // 确保 userid 被正确赋值
         // 如果有头像URL，更新avatarSrc；否则使用默认头像
         avatarSrc.value = res.data.data.avatar ? res.data.data.avatar : defaultAvatarSrc;
+        userStore.updateUserInfo(userInfo.value); // 同步到 Pinia Store
       } else {
         console.error("Error fetching user info:", res.data.message);
       }
@@ -135,6 +139,7 @@ const saveUserInfo = async () => {
     if (response.data.code === 0) {
       alert('用户信息已保存！');
       // 成功保存后的处理逻辑...
+      userStore.updateUserInfo(userInfo.value); // 更新 Pinia Store 中的用户信息
     } else {
       alert(response.data.message || '保存失败，请稍后再试。');
     }

@@ -23,7 +23,7 @@
           <el-button type="primary" class="popover-button" @click="goToLogin">Login</el-button>
         </div>
         <div class="popover-content">
-          <el-button type="danger"  class="popover-button" @click="goToLogin">Logout</el-button>
+          <el-button type="danger"  class="popover-button" @click="goToLogout">Logout</el-button>
         </div>
       </el-popover>
 
@@ -106,38 +106,43 @@ import avatar from '@assets/avatar.png';
 import axios from "axios";
 import { useAuthStore } from "~/stores/auth";
 import axiosInstance from "~/utils/axiosInstance";
+import {useUserStore} from "~/stores/user";
+
 const router = useRouter();
 let items = ref([]);
+const defaultAvatarSrc = 'https://free4.yunpng.top/2024/12/16/675fd9e3c54d0.png';
 
-const avatarSrc = ref(avatar);
 const authStore = useAuthStore();
+const userStore = useUserStore(); // 初始化 UserStore
+
 const isAdmin = computed(() => authStore.userRoles.includes('admin'));
 const isLoggedIn = computed(() => authStore.isAuthenticated);
-const userInfo = ref({
-  userid: null,
-  username: '',
-  email: '',
-  role: '',
-  createdTime: '',
-  updatedTime: '',
-  avatar: null,
-  nickname: null,
-  signature: ''
+
+// 用户信息的响应式变量，明确指定类型为 UserInfo
+const userInfo = computed(() => userStore.userInfo);
+
+const avatarSrc = computed(() => userInfo.value.avatar || defaultAvatarSrc);
+
+// 当组件首次加载时调用 fetchUserInfo
+onMounted(() => {
+  userStore.fetchUserInfo();
 });
 
-const fetchData = async () => {
-  try {
-    let res = await axiosInstance.get('user/info');
-    console.log(res.data);
-    items.value = res.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
+// 监听认证状态变化
+watch(isLoggedIn, async (newVal) => {
+  if (newVal) {
+    await userStore.fetchUserInfo();
   }
+});
+
+
+const goToLogin = () => {
+  router.push('/login');
 };
 
-// 重置用户信息到默认值
-const resetUserInfo = () => {
-  userInfo.value = {
+const goToLogout = async () => {
+  await authStore.logout();
+  userStore.userInfo = {
     userid: null,
     username: 'Guest',
     email: '',
@@ -145,59 +150,12 @@ const resetUserInfo = () => {
     createdTime: '',
     updatedTime: '',
     avatar: null,
-    nickname: null,
-    signature: 'please login'
+    nickname: '',
+    signature: 'Please login to view more information'
   };
-  // 设置默认头像
-  avatarSrc.value = avatar;
-};
-
-// 获取用户信息
-const fetchUserInfo = async () => {
-  try {
-    if (authStore.isAuthenticated) { 
-      let res = await axiosInstance.get('user/info');
-      if (res.data.code === 0) {
-        userInfo.value = res.data.data;
-        if (res.data.data.avatar) {
-          avatarSrc.value = res.data.data.avatar;
-        }
-      } else {
-        console.error("Error fetching user info:", res.data.message);
-      }
-    } else {
-      resetUserInfo();
-    }
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    resetUserInfo();
-  }
-};
-
-// 当组件首次加载时调用 fetchData 和 fetchUserInfo
-onMounted(() => {
-  fetchData();
-  fetchUserInfo();
-});
-
-// 监听认证状态变化
-watch(() => authStore.isAuthenticated, async (newVal) => {
-  if (newVal) {
-    await fetchUserInfo();
-  } else {
-    resetUserInfo();
-  }
-});
-
-// 登录处理
-const handleLogin = async () => {
-  await authStore.login({ username: 'user', roles: ['user'] });
-  await fetchUserInfo();
-};
-
-const goToLogin = () => {
   router.push('/login');
 };
+
 
 const isCollapse = ref(true);
 const handleOpen = (key: string, keyPath: string[]) => {

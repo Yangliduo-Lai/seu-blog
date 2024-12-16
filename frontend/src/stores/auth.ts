@@ -31,13 +31,12 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('token', this.token);
       }
     },
-    logout(): void {
+    logout() {
       this.isAuthenticated = false;
       this.userRoles = [];
-      this.username = '';
-      this.token = undefined;
-      // 清除 token
-      localStorage.removeItem('token');
+      // 清除可能存在的本地存储或会话信息
+      localStorage.removeItem('token'); // 如果使用了 token 存储
+      sessionStorage.clear(); // 清除 session 存储
     }
   }
 });
