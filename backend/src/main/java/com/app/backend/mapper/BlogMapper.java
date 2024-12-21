@@ -9,8 +9,8 @@ import java.util.List;
 @Mapper
 public interface BlogMapper {
     // 新增文章
-    @Insert("insert into blog(title,content,status,tagId,authorId,createdTime,updatedTime) " +
-            "values(#{title},#{content},#{status},#{tagId},#{authorId},#{createdTime},#{updatedTime})")
+    @Insert("insert into blog(title,concepts,content,status,tagId,authorId,createdTime,updatedTime) " +
+            "values(#{title},#{concepts},#{content},#{status},#{tagId},#{authorId},#{createdTime},#{updatedTime})")
     void add(Blog blog);
 
     // 条件分页查询

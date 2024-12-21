@@ -16,6 +16,8 @@ public class Blog {
     private String title;
     @NotEmpty
     private String content;
+    @NotEmpty
+    private String concepts;
     private Integer authorId;
     private Integer views;
     private Status status;

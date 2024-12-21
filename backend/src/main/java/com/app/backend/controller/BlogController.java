@@ -21,7 +21,7 @@ public class BlogController {
         return Result.success();
     }
 
-    @GetMapping("/published/page")
+    @GetMapping("/page")
     public Result<PageBean<Blog>> list(
             Integer pageNum,
             Integer pageSize,
