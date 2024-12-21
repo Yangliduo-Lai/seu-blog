@@ -2,28 +2,43 @@
   <div class="blog-content">
     <el-card
         v-for="post in posts"
-        :key="post.id"
+        :key="post.blogId"
         class="post-card"
         :body-style="{ padding: '20px' }"
     >
       <h2>{{ post.title }}</h2>
-      <p>{{ post.excerpt }}</p>
-      <!-- <el-button type="text" :to="post.link">Read More</el-button> -->
-      <el-button type="text" @click="goToBlog()">Read More</el-button>
+      <p>{{ post.concepts }}...</p>
+      <el-button type="text" @click="goToBlog(post.blogId)">Read More</el-button>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { ElMessage, SCOPE } from "element-plus";
+import { ref, onMounted } from 'vue';
+import { ElMessage } from "element-plus";
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import axiosInstance from '~/utils/axiosInstance';
+interface BlogPost {
+  blogId: number;
+  title: string;
+  concepts:string;
+  content: string;
+  authorId: number;
+  views: number;
+  status: string;
+  createdTime: string;
+  updatedTime: string;
+  tagId: number;
+}
 
 const router = useRouter();
-
 const goToBlog = () => {
   router.push('/blog');
-};
+}
+// const goToBlog = (id: number) => {
+//   router.push(`/blog/${id}`);
+// };
 
 defineProps<{ msg: string }>();
 
@@ -38,13 +53,28 @@ const toast = () => {
 
 const value1 = ref(true);
 
-// 模拟博客文章数据
-const posts = ref([
-  { id: 1, title: "Ambiguity in template parameters", excerpt: "C++ has had three kinds of template parameters since basically always: type template parameters (the vast majority), non-type template parameters (sometimes called value template parameters...)", link: "#" },
-  { id: 2, title: "Concept template parameters", excerpt: "I thought I’d put a post together with some examples, as a way to work towards motivation for a language change.", link: "#" },
-  { id: 3, title: "Declarations using Concepts", excerpt: "One of my all-time favorite C++ talks is Ben Deane's 'Using Types Effectively' from CppCon 2016. I like it for a lot of reasons, but for the purposes of this post - I really like the game Ben plays (starting at...", link: "#" },
-  { id: 4, title: "Things can do with Concepts", excerpt: "You probably see where I’m going with this. All of these concepts are the same - or least they could be the same if we could factor out what constraint we’re performing on the value type of the...", link: "#" }
-]);
+const posts = ref<BlogPost[]>([]);
+
+const fetchBlogPosts = async () => {
+  try {
+    const response = await axiosInstance.get<{ code: number; message: string; data: { total: number; items: BlogPost[] } }>('blog/page', {
+      params: {
+        pageNum: 1,
+        pageSize: 999
+      }
+    });
+    // 假设API返回的数据结构如你所描述
+    if (response.data.code === 0 && response.data.data.items) {
+      posts.value = response.data.data.items;
+    }
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+  }
+};
+
+onMounted(() => {
+  fetchBlogPosts();
+});
 </script>
 
 <style>
@@ -90,5 +120,7 @@ p {
 .el-button:hover {
   color: #2a6fbd; /* 悬停时按钮颜色加深 */
 }
-
 </style>
+
+
+
